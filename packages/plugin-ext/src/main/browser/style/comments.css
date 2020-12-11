@@ -158,18 +158,14 @@
     width: 100%;
 }
 
-.monaco-editor .review-widget .body .comment-form .theia-comments-input-message-container {
-    display: none;
-}
-
-.monaco-editor .review-widget .body .comment-form.expand .theia-comments-input-message-container {
+.theia-comments-input-message-container {
     display: flex;
     flex-direction: column;
     margin: 0px 0px 7px 0px;
     max-height: 400px;
 }
 
-.monaco-editor .review-widget .body .comment-form.expand .theia-comments-input-message-container textarea {
+.theia-comments-input-message-container textarea {
     line-height: var(--theia-content-line-height);
     background: var(--theia-editor-background);
     resize: none;
@@ -180,17 +176,17 @@
     border: none;
 }
 
-.monaco-editor .review-widget .body .comment-form.expand .theia-comments-input-message-container textarea:placeholder-shown {
+.theia-comments-input-message-container textarea:placeholder-shown {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.monaco-editor .review-widget .body .comment-form.expand .theia-comments-input-message-container textarea:not(:focus) {
+.theia-comments-input-message-container textarea:not(:focus) {
     border: var(--theia-border-width) solid var(--theia-editor-background);
 }
 
-.monaco-editor .review-widget .body .comment-form.expand .theia-comments-input-message-container textarea:focus {
+.theia-comments-input-message-container textarea:focus {
     border: var(--theia-border-width) solid var(--theia-focusBorder);
 }
 
@@ -239,15 +235,11 @@
 }
 
 .monaco-editor .review-widget .body .comment-form .form-actions {
-    display: none;
-}
-
-.monaco-editor .review-widget .body .comment-form.expand .form-actions {
     display: block;
     box-sizing: content-box;
 }
 
-.monaco-editor .review-widget .body .comment-form.expand .form-actions,
+.monaco-editor .review-widget .body .comment-form .form-actions,
 .monaco-editor .review-widget .body .edit-container .form-actions {
     overflow: auto;
     padding: 10px 0;
@@ -262,7 +254,7 @@
     margin: 5px 0 10px 0;
 }
 
-.monaco-editor .review-widget .body .comment-form.expand .comments-text-button,
+.monaco-editor .review-widget .body .comment-form .comments-text-button,
 .monaco-editor .review-widget .body .edit-container .comments-text-button {
     width: auto;
     padding: 4px 10px;
@@ -270,12 +262,8 @@
     margin-bottom: 5px;
 }
 
-.monaco-editor .review-widget .body .comment-form.expand .comments-text-button {
+.monaco-editor .review-widget .body .comment-form .comments-text-button {
     float: right;
-}
-
-.monaco-editor .review-widget .body .comment-form.expand .review-thread-reply-button {
-    display: none;
 }
 
 .theia-comments-inline-actions-container {

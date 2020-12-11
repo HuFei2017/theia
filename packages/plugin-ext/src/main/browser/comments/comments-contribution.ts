@@ -73,7 +73,6 @@ export class CommentsContribution {
                         this.rangeDecorator.update(editor.diffEditor.getModifiedEditor(), <ICommentInfo[]>modifiedComments.filter(c => !!c));
                     }
                 }
-                // const toDispose = editor.onMouseDown(event => this.onEditorMouseDown(event));
                 disposables.push(editor.onMouseDown(e => this.onEditorMouseDown(e)));
                 disposables.push(this.commentService.onDidUpdateCommentThreads(async e => {
                         const editorModel = this.editor && this.editor.getModel();
@@ -115,20 +114,6 @@ export class CommentsContribution {
                             }
                         });
                         added.forEach(thread => {
-                            // const matchedZones = this._commentWidgets.filter(zoneWidget => zoneWidget.owner === e.owner
-                            //     && zoneWidget.commentThread.threadId === thread.threadId);
-                            // if (matchedZones.length) {
-                            //     return;
-                            // }
-                            //
-                            // const matchedNewCommentThreadZones = this._commentWidgets.filter(zoneWidget => zoneWidget.owner === e.owner
-                            //     && (zoneWidget.commentThread as any).commentThreadHandle === -1 && Range.equalsRange(zoneWidget.commentThread.range, thread.range));
-                            //
-                            // if (matchedNewCommentThreadZones.length) {
-                            //     matchedNewCommentThreadZones[0].update(thread);
-                            //     return;
-                            // }
-
                             const pendingCommentText = this._pendingCommentCache[e.owner] && this._pendingCommentCache[e.owner][thread.threadId!];
                             this.displayCommentThread(e.owner, thread, pendingCommentText);
                             this._commentInfos.filter(info => info.owner === e.owner)[0].threads.push(thread);
@@ -201,60 +186,6 @@ export class CommentsContribution {
         }
 
         this._commentInfos = commentInfos;
-        // let lineDecorationsWidth: number = this.editor.getLayoutInfo().decorationsWidth;
-        //
-        // if (this._commentInfos.some(info => Boolean(info.commentingRanges && (Array.isArray(info.commentingRanges) ?
-        // info.commentingRanges : info.commentingRanges.ranges).length))) {
-        //     if (!this._commentingRangeSpaceReserved) {
-        //         this._commentingRangeSpaceReserved = true;
-        //         let extraEditorClassName: string[] = [];
-        //         const configuredExtraClassName = this.editor.getRawOptions().extraEditorClassName;
-        //         if (configuredExtraClassName) {
-        //             extraEditorClassName = configuredExtraClassName.split(' ');
-        //         }
-        //
-        //         const options = this.editor.getOptions();
-        //         if (options.get(EditorOption.folding)) {
-        //             lineDecorationsWidth -= 16;
-        //         }
-        //         lineDecorationsWidth += 9;
-        //         extraEditorClassName.push('inline-comment');
-        //         this.editor.updateOptions({
-        //             extraEditorClassName: extraEditorClassName.join(' '),
-        //             lineDecorationsWidth: lineDecorationsWidth
-        //         });
-        //
-        //         // we only update the lineDecorationsWidth property but keep the width of the whole editor.
-        //         const originalLayoutInfo = this.editor.getLayoutInfo();
-        //
-        //         this.editor.layout({
-        //             width: originalLayoutInfo.width,
-        //             height: originalLayoutInfo.height
-        //         });
-        //     }
-        // }
-        //
-        // // create viewzones
-        // this.removeCommentWidgetsAndStoreCache();
-        //
-        // this._commentInfos.forEach(info => {
-        //     let providerCacheStore = this._pendingCommentCache[info.owner];
-        //     info.threads = info.threads.filter(thread => !thread.isDisposed);
-        //     info.threads.forEach(thread => {
-        //         let pendingComment: string | null = null;
-        //         if (providerCacheStore) {
-        //             pendingComment = providerCacheStore[thread.threadId!];
-        //         }
-        //
-        //         if (pendingComment) {
-        //             thread.collapsibleState = modes.CommentThreadCollapsibleState.Expanded;
-        //         }
-        //
-        //         this.displayCommentThread(info.owner, thread, pendingComment);
-        //     });
-        // });
-        //
-        // this._commentingRangeDecorator.update(this.editor, this._commentInfos);
     }
 
     get editor(): monaco.editor.IStandaloneCodeEditor | undefined {

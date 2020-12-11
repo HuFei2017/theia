@@ -50,18 +50,6 @@ export class CommentThreadWidget extends BaseWidget {
 
     private readonly menu: CompositeMenuNode;
 
-    public getGlyphPosition(): number {
-        // if (this._commentGlyph) {
-        // return this._commentGlyph.getPosition().position!.lineNumber;
-        // }
-        return 0;
-    }
-
-    // @postConstruct()
-    // protected init(): void {
-    //     this.render();
-    // }
-
     private readonly inputRef: RefObject<HTMLTextAreaElement> = React.createRef<HTMLTextAreaElement>();
 
     constructor(
@@ -100,6 +88,10 @@ export class CommentThreadWidget extends BaseWidget {
         });
         // this._fillContainer(this.zone.containerNode);
         // this.createThreadLabel();
+    }
+
+    public getGlyphPosition(): number {
+        return this.commentGlyphWidget.getPosition();
     }
 
     public collapse(): Promise<void> {
@@ -295,7 +287,6 @@ export class CommentThreadWidget extends BaseWidget {
                              commands={this.commands}
                              commentThread={this.commentThread}
                              menus={this.menus}
-                             inputRef={this.inputRef}
                 />
             </div>
         </div>, this.zoneWidget.containerNode);
@@ -308,50 +299,38 @@ namespace CommentForm {
         commentThread: CommentThread;
         commands: CommandRegistry;
         contextKeyService: CommentsContextKeyService;
-        inputRef: RefObject<HTMLTextAreaElement>;
-    }
-
-    export interface State {
-        expanded: boolean
     }
 }
 
-export class CommentForm<P extends CommentForm.Props = CommentForm.Props> extends React.Component<P, CommentForm.State> {
+export class CommentForm extends React.Component<CommentForm.Props> {
     private readonly menu: CompositeMenuNode;
+    private readonly inputRef: RefObject<HTMLTextAreaElement> = React.createRef<HTMLTextAreaElement>();
     private inputValue: string = '';
     private readonly getInput = () => this.inputValue;
     private readonly clearInput: () => void = () => {
-        const input = this.props.inputRef.current;
+        const input = this.inputRef.current;
         if (input) {
             this.inputValue = '';
             input.value = this.inputValue;
             this.props.contextKeyService.commentIsEmpty.set(true);
         }
     };
-    protected expand = () => {
-        this.setState({ expanded: true });
-    };
-    protected collapse = () => this.setState({ expanded: false });
 
     private readonly onInput: (event: React.FormEvent) => void = (event: React.FormEvent) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const value = (event.target as any).value;
         if (this.inputValue.length === 0 || value.length === 0) {
             this.props.contextKeyService.commentIsEmpty.set(value.length === 0);
+            const input = this.inputRef.current;
+            if (input) {
+                input.focus();
+            }
         }
         this.inputValue = value;
     };
 
-    constructor(props: P) {
+    constructor(props: CommentForm.Props) {
         super(props);
-        this.state = {
-            expanded: false
-        };
-
-        const setState = this.setState.bind(this);
-        this.setState = newState => {
-            setState(newState);
-        };
 
         this.menu = this.props.menus.getMenu(COMMENT_THREAD_CONTEXT);
         this.menu.children.map(node => node instanceof ActionMenuNode && node.action.when).forEach(exp => {
@@ -362,14 +341,14 @@ export class CommentForm<P extends CommentForm.Props = CommentForm.Props> extend
     }
 
     render(): React.ReactNode {
-        const { commands, commentThread, contextKeyService, inputRef } = this.props;
+        const { commands, commentThread, contextKeyService } = this.props;
         const hasExistingComments = commentThread.comments && commentThread.comments.length > 0;
-        return <div className={'comment-form' + (this.state.expanded ? ' expand' : '')}>
+        return <div className={'comment-form'}>
             <div className={'theia-comments-input-message-container'}>
                         <textarea className={'theia-comments-input-message theia-input'}
                                   placeholder={hasExistingComments ? 'Reply...' : 'Type a new comment'}
                                   onInput={this.onInput}
-                                  ref={inputRef}>
+                                  ref={this.inputRef}>
                         </textarea>
             </div>
             <CommentActions menu={this.menu}
@@ -379,16 +358,8 @@ export class CommentForm<P extends CommentForm.Props = CommentForm.Props> extend
                             getInput={this.getInput}
                             clearInput={this.clearInput}
             />
-            <button className={'review-thread-reply-button'} title={'Reply...'} onClick={this.expand}>Reply...</button>
         </div>;
     }
-
-    // private expandReplyArea(): void {
-    //     if (!dom.hasClass(this._commentForm, 'expand')) {
-    //         dom.addClass(this._commentForm, 'expand');
-    //         this._commentEditor.focus();
-    //     }
-    // }
 }
 
 namespace ReviewComment {
@@ -456,7 +427,8 @@ export class ReviewComment<P extends ReviewComment.Props = ReviewComment.Props> 
                         </div>
                     </div>
                 </div>
-                <CommentBody value={comment.body.value} isVisible={comment.mode === undefined || comment.mode === CommentMode.Preview}/>
+                <CommentBody value={comment.body.value}
+                             isVisible={comment.mode === undefined || comment.mode === CommentMode.Preview}/>
                 <CommentEditContainer isVisible={comment.mode === CommentMode.Editing}
                                       contextKeyService={contextKeyService}
                                       menus={menus}
@@ -505,6 +477,8 @@ namespace CommentEditContainer {
 export class CommentEditContainer extends React.Component<CommentEditContainer.Props> {
     render(): React.ReactNode {
         const { isVisible, menus, comment, commands, commentThread, contextKeyService, inputRef } = this.props;
+        // const inputRef: RefObject<HTMLTextAreaElement> = React.createRef<HTMLTextAreaElement>();
+        inputRef.current?.focus();
         if (!isVisible) {
             return false;
         }
